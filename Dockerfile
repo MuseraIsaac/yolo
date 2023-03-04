@@ -10,20 +10,26 @@ RUN git clone https://github.com/MuseraIsaac/yolo.git
 
 # Navigate to the YOLO root directory
 WORKDIR /yolo
-# Copy the package.json and package-lock.json files to the working directory
-COPY client/package*.json ./
+
+# Install the dependencies for the client
+RUN cd client && npm install && npm start
+
+# Install the dependencies for the backend
+RUN cd ../backend && npm install && npm start
+
+
 # Install Node.js dependencies
-RUN npm install
-COPY package.json package.json
+#RUN npm install
+#COPY package.json package.json
 # Build the YOLO application
-RUN make
+#RUN make
 
 # Copy the binary and configuration files to the Docker image
 COPY ./cfg/ ./cfg/
 COPY ./data/ ./data/
 COPY ./build/darknet/x64/darknet ./darknet
 
-# Set the command to be run when the Docker container is launched
+# command to run when Docker container is launched
 CMD ["npm", "start"]
 
 #ENTRYPOINT ["node" "composeHelper.js" ]
