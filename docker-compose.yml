@@ -12,11 +12,17 @@ services:
     depends_on:
       - mongodb
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/yolo
+      - MONGODB_URI=mongodb+srv://<musera11>:<nWtKNkuX70oVFfMJ>@cluster1.ykhmd7r.mongodb.net/?retryWrites=true&w=majority
     command: ["npm", "start"]
   mongodb:
     image: mongo:latest
     container_name: mongodb
-    restart: always
+    volumes:
+      - ./data/db:/data/db
+    networks:
+        - yolo_network
     ports:
       - "27017:27017"
+networks:
+    yolo_network:
+      driver: bridge
