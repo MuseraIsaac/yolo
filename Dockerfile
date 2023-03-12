@@ -18,7 +18,7 @@ WORKDIR /yolo
 RUN cd client && npm install && npm start
 
 # Install the dependencies for the backend
-RUN cd ../backend && npm install && npm start
+RUN cd .. && cd backend && npm install && npm start
 
 
 # Install Node.js dependencies
