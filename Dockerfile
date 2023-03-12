@@ -5,6 +5,9 @@ LABEL maintainer="Musera <isaac.musera@student.moringaschool.com>"
 #RUN apt-get update && \
    # apt-get install -y git build-essential cmake libopencv-dev nodejs npm mongodb
 
+ #install git
+RUN apk add --no-cache git
+
 # Clone the YOLO repository
 RUN git clone https://github.com/MuseraIsaac/yolo.git
 
