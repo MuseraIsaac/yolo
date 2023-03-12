@@ -22,7 +22,7 @@ services:
     networks:
         - yolo_network
     ports:
-      - "27017:27017"
+      - "5000:5000"
 networks:
     yolo_network:
       driver: bridge
