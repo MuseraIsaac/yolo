@@ -1,9 +1,9 @@
 # Use an official Ubuntu image as the base image
-FROM ubuntu:latest
+FROM node:alpine
 LABEL maintainer="Musera <isaac.musera@student.moringaschool.com>"
 # Install required packages and dependencies
-RUN apt-get update && \
-    apt-get install -y git build-essential cmake libopencv-dev nodejs npm mongodb
+#RUN apt-get update && \
+   # apt-get install -y git build-essential cmake libopencv-dev nodejs npm mongodb
 
 # Clone the YOLO repository
 RUN git clone https://github.com/MuseraIsaac/yolo.git
@@ -25,9 +25,9 @@ RUN cd ../backend && npm install && npm start
 #RUN make
 
 # Copy the binary and configuration files to the Docker image
-COPY ./cfg/ ./cfg/
-COPY ./data/ ./data/
-COPY ./build/darknet/x64/darknet ./darknet
+#COPY ./cfg/ ./cfg/
+#COPY ./data/ ./data/
+#COPY ./build/darknet/x64/darknet ./darknet
 
 # command to run when Docker container is launched
 CMD ["npm", "start"]
