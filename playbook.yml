@@ -1,0 +1,54 @@
+---
+- name: Clone and deploy YOLO application
+  hosts: 192.168.33.10
+  become: true
+
+  vars:
+    app_name: yolo
+    app_repo: https://github.com/MuseraIsaac/yolo.git
+    dockerfile: Dockerfile
+
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Clone application repository
+      git:
+        repo: "{{ app_repo }}"
+        dest: "/opt/{{ app_name }}"
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Build Docker image
+      docker_image:
+        name: "{{ app_name }}"
+        tag: latest
+        build:
+          context: "/opt/{{ app_name }}"
+          dockerfile: "{{ dockerfile }}"
+
+    - name: Start Docker container
+      docker_container:
+        name: "{{ app_name }}"
+        image: "{{ app_name }}:latest"
+        state: started
+        published_ports:
+          - "80:80"
+        volumes:
+          - "/opt/{{ app_name }}/config:/app/config"
+
+    - name: Verify application is running
+      uri:
+        url: http://192.168.33.10:80/
+        status_code: 200
+        timeout: 5
