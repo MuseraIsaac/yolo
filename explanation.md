@@ -72,3 +72,28 @@
     -Avoid special characters: Refrain from using special characters like underscores, spaces, or colons in tag names.
 
     -Exercise caution with the latest tag: Avoid using the latest tag for images, unless absolutely necessary.
+
+# Ansible Playbook
+    Task 1: Install Git
+    -This task installs the Git version control software on the target system using the apt module.
+    
+    Task 2: Clone application repository
+    -This task clones the YOLO application repository from the specified Git repository URL to the /opt/yolo directory on the target system using the git module.
+    
+    Task 3: Install Docker
+    -This task installs Docker on the target system using the apt module.
+    
+    Task 4: Install Docker Compose
+    -This task installs Docker Compose on the target system using the apt module.
+    
+    Task 5: Build Docker image
+    -This task builds a Docker image for the YOLO application using the Dockerfile specified in the dockerfile variable and the source code in the /opt/yolo directory on the target system. The resulting Docker image is tagged with the name specified in the app_name variable and the latest tag using the docker_image module.
+    
+    Task 6: Start Docker container
+    -This task starts a Docker container using the Docker image built in the previous task. The Docker container is named with the value of the app_name variable and is published on port 80 of the target system. The /opt/yolo/config directory on the target system is mounted as a volume in the Docker container to provide configuration files to the YOLO application. The docker_container module is used to execute this task.
+    
+    Task 7: Configure application
+    -This task runs the configure.sh script in the Docker container to configure the YOLO application. The command module is used to execute this task.
+    
+    Task 8: Verify application is running
+    -This task sends an HTTP GET request to http://192.168.33.10:80/ on the target system to verify that the YOLO application is running. The uri module is used to execute this task. If the request is successful (HTTP status code 200), the task completes successfully. If not, the task fails.
