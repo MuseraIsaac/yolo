@@ -4,6 +4,7 @@
   become: true
 
   vars:
+   -name: Declare variables
     app_name: yolo
     app_repo: https://github.com/MuseraIsaac/yolo.git
     dockerfile: Dockerfile
