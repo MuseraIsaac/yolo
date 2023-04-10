@@ -1,0 +1,148 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: yolo-namespace
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: client-statefulset
+  namespace: yolo-namespace
+spec:
+  serviceName: "client-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yolo-client
+  template:
+    metadata:
+      labels:
+        app: yolo-client
+    spec:
+      containers:
+        - name: client
+          image: musera11/yolo-client
+          ports:
+            - containerPort: 3000
+          stdin: true
+          stdinOnce: true
+          tty: true
+          env:
+            - name: BACKEND_URL
+              value: http://backend-service:5000
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: backend-statefulset
+  namespace: yolo-namespace
+spec:
+  serviceName: "backend-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yolo-backend
+  template:
+    metadata:
+      labels:
+        app: yolo-backend
+    spec:
+      containers:
+        - name: backend
+          image: musera11/yolo-backend
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGODB_URI
+              value: mongodb://yolo-mongodb:27017
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-statefulset
+  namespace: yolo-namespace
+spec:
+  serviceName: "mongodb-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yolo-mongodb
+  template:
+    metadata:
+      labels:
+        app: yolo-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-persistent-storage
+              mountPath: /data/db
+      volumes:
+        - name: mongodb-persistent-storage
+          emptyDir: {}
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+  namespace: yolo-namespace
+spec:
+  selector:
+    app: yolo-client
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: yolo-namespace
+spec:
+  selector:
+    app: yolo-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: yolo-namespace
+spec:
+  selector:
+    app: yolo-mongodb
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP
