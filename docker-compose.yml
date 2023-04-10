@@ -21,7 +21,7 @@ services:
      depends_on:
        - database
      networks: 
-       - yolo-network
+       - yolonetwork
   database:
      image: mongo:latest
      container_name: yolomongodb
